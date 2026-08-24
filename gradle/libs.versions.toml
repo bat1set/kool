@@ -1,15 +1,15 @@
 [versions]
-agp = "8.13.2"
-compose = "1.11.0"
+agp = "9.3.1"
+compose = "1.11.1"
 compose-mini = "0.0.1"
-kotlin = "2.3.21"
+kotlin = "2.4.10"
 kotlin-coroutines = "1.11.0"
 kotlin-serialization = "1.11.0"
 kotlin-datetime = "0.8.0-0.6.x-compat"
-kotlin-atomicfu = "0.32.1"
+kotlin-atomicfu = "0.33.0"
 kotlin-dokka = "2.2.0"
 kotlinx-browser = "0.5.0"
-lwjgl = "3.4.1"
+lwjgl = "3.4.2"
 jsvg = "2.1.0"
 androidsvg = "1.4"
 physx-jni = "2.7.2"
@@ -21,7 +21,7 @@ box2d-wasm = "1.0.0"
 wgpu4k = "0.1.1"
 webgpu-ktypes = "0.0.8"
 rococoa = "0.0.1"
-jna = "5.18.1"
+jna = "5.19.1"
 
 [libraries]
 kotlin-coroutines = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "kotlin-coroutines" }
@@ -34,7 +34,7 @@ kotlin-test = { group = "org.jetbrains.kotlin", name = "kotlin-test", version.re
 kotlin-test-junit = { group = "org.jetbrains.kotlin", name = "kotlin-test-junit", version.ref = "kotlin" }
 kotlinx-browser = { module = "org.jetbrains.kotlinx:kotlinx-browser", version.ref = "kotlinx-browser" }
 jsvg = { group = "com.github.weisj", name = "jsvg", version.ref = "jsvg" }
-jspecify-annotations = { module = "org.jspecify:jspecify", version = "1.0.0" }
+jspecify-annotations = { module = "org.jspecify:jspecify", version = "1.0.1" }
 androidsvg = { group = "com.caverock", name = "androidsvg-aar", version.ref = "androidsvg" }
 lwjgl-core = { group = "org.lwjgl", name = "lwjgl", version.ref = "lwjgl" }
 lwjgl-glfw = { group = "org.lwjgl", name = "lwjgl-glfw", version.ref = "lwjgl" }
@@ -72,8 +72,8 @@ plugindep-kotlin-serialization = { group = "org.jetbrains.kotlin", name = "kotli
 plugindep-kotlin-atomicfu = { group = "org.jetbrains.kotlin", name = "atomicfu", version.ref = "kotlin" }
 plugindep-kotlin-jsplainobjs = { module = "org.jetbrains.kotlin.plugin.js-plain-objects:org.jetbrains.kotlin.plugin.js-plain-objects.gradle.plugin", version.ref = "kotlin" }
 plugindep-dokka = { group = "org.jetbrains.dokka", name = "dokka-gradle-plugin", version.ref = "kotlin-dokka" }
-plugindep-android-library = { group = "com.android.library", name = "com.android.library.gradle.plugin", version.ref = "agp" }
-plugindep-maven-publish = { group = "com.vanniktech", name = "gradle-maven-publish-plugin", version = "0.36.0" }
+plugindep-android-kmp-library = { group = "com.android.kotlin.multiplatform.library", name = "com.android.kotlin.multiplatform.library.gradle.plugin", version.ref = "agp" }
+plugindep-maven-publish = { group = "com.vanniktech", name = "gradle-maven-publish-plugin", version = "0.37.0" }
 
 [plugins]
 webidl = { id = "de.fabmax.webidl-util", version = "0.10.5" }

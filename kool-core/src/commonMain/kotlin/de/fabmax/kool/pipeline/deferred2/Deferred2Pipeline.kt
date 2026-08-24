@@ -27,7 +27,9 @@ class Deferred2Pipeline(
     val maxGlobalLights: Int = 1,
     var renderScale: Float = 1f,
     var tsaa: List<Vec2f> = TSAA_4,
-    maxObjects: Int = 16384
+    maxObjects: Int = 16384,
+    addDefaultSkybox: Boolean = true,
+    lightingMod: (KslProgram.() -> Unit)? = null,
 ) {
     val size: Vec2i get() = Vec2i(
         (scene.mainRenderPass.viewport.width * renderScale).toInt().coerceAtLeast(16),
@@ -50,8 +52,16 @@ class Deferred2Pipeline(
         initialSize = size,
         distFormat = TexFormat.R_F32,
     )
-    val lightingPass = LightingPass(size = size, pipeline = this)
+    val lightingPass = LightingPass(
+        size = size,
+        pipeline = this,
+        addDefaultSkybox = addDefaultSkybox,
+        lightingMod = lightingMod,
+    )
     val filterPass = TemporalFilterPass(size = size, pipeline = this)
+
+    internal val viewProjNoTsaa = MutableMat4f()
+    internal val invViewProjNoTsaa = MutableMat4f()
 
     private val swapListeners = BufferedList<() -> Unit>()
     private val resizeListeners = BufferedList<(Vec2i) -> Unit>()
@@ -59,6 +69,7 @@ class Deferred2Pipeline(
     init {
         aoPass.kernelSize = 32 / tsaa.size.coerceAtLeast(2)
         aoPass.temporalKernels = tsaa.size.coerceAtLeast(1)
+        aoPass.resize(size.x, size.y)
 
         scene.addComputePass(reprojectMatrixComputePass)
         scene.addOffscreenPass(gbuffers.a)
@@ -78,6 +89,9 @@ class Deferred2Pipeline(
 
         val offsetMat = MutableMat4f()
         camera.onCameraUpdated += {
+            viewProjNoTsaa.set(camera.viewProj)
+            invViewProjNoTsaa.set(camera.invViewProj)
+
             val tsaa = tsaa
             if (tsaa.isNotEmpty()) {
                 val offset = tsaa[Time.frameCount % tsaa.size]
@@ -85,7 +99,9 @@ class Deferred2Pipeline(
                 val height = it.viewport.height
                 offsetMat.setIdentity().translate(offset.x / width, offset.y / height, 0f).mul(camera.proj)
                 camera.proj.set(offsetMat)
+                camera.proj.mul(camera.view, camera.dataF.viewProj)
                 camera.lazyInvProj.isDirty = true
+                camera.dataF.lazyInvViewProj.isDirty = true
             }
         }
 
@@ -114,7 +130,7 @@ class Deferred2Pipeline(
             set(it.view, camera.view)
             set(it.viewProj, camera.viewProj)
             set(it.invView, camera.invView)
-            set(it.invViewProj, camera.invViewProj)
+            set(it.invViewProj, invViewProjNoTsaa)
             set(it.oldViewProj, reprojectMatrixComputePass.uploadData.oldVal.viewProjMat)
             set(it.camPosition, camera.globalPos)
             set(it.camNear, camera.clipNear)
